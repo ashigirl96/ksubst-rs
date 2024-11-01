@@ -7,7 +7,7 @@ keywords = ["envsubst", "varsubst"]
 authors = ["ashigirl96 <nishimura.reon@enechain.co.jp>"]
 repository = "https://github.com/ashigirl96/ksubst-rs"
 edition = "2021"
-rust-version = "1.56.0"
+rust-version = "1.82.0"
 exclude = [".gitignore", ".github"]
 
 [dependencies]
