@@ -1,17 +1,29 @@
 [package]
-name = "envsubst"
+name = "ksubst"
 version = "0.2.1"
 description = "Variables substitution"
 license = "MIT OR Apache-2.0"
 keywords = ["envsubst", "varsubst"]
-authors = ["Luca Bruno <lucab@lucabruno.net>"]
-repository = "https://github.com/coreos/envsubst-rs"
+authors = ["ashigirl96 <nishimura.reon@enechain.co.jp>"]
+repository = "https://github.com/ashigirl96/ksubst-rs"
 edition = "2021"
-rust-version = "1.56.0"
+rust-version = "1.82.0"
 exclude = [".gitignore", ".github"]
 
 [dependencies]
 thiserror = "^1.0"
+regex = "1.11.1"
+clap = { version = "4.5.20", features = ["derive"] }
+dotenvy = "0.15.7"
+
+[[bin]]
+name = "ksubst"
+path = "main.rs"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
 
 [package.metadata.release]
 sign-commit = true
