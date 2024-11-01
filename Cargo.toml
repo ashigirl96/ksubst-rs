@@ -1,11 +1,11 @@
 [package]
-name = "envsubst"
+name = "ksubst"
 version = "0.2.1"
 description = "Variables substitution"
 license = "MIT OR Apache-2.0"
 keywords = ["envsubst", "varsubst"]
-authors = ["Luca Bruno <lucab@lucabruno.net>"]
-repository = "https://github.com/coreos/envsubst-rs"
+authors = ["ashigirl96 <nishimura.reon@enechain.co.jp>"]
+repository = "https://github.com/ashigirl96/ksubst-rs"
 edition = "2021"
 rust-version = "1.56.0"
 exclude = [".gitignore", ".github"]

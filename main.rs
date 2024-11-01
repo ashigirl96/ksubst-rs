@@ -1,5 +1,5 @@
 use clap::Parser;
-use envsubst::substitute;
+use ksubst::substitute;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, Read};

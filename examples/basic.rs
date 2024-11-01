@@ -1,4 +1,4 @@
-use envsubst::substitute;
+use ksubst::substitute;
 use std::collections::HashMap;
 
 fn main() {

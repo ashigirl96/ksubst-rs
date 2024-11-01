@@ -38,8 +38,6 @@ VAR2= VAR2.= VAR-=
 Here's the code used in the example:
 
 ```rust
-use std::collections::HashMap;
-
 fn main() {
     let template = "VAR=${VAR} VAR.=${VAR.} VAR-=${VAR-}\nVAR2=${VAR2} VAR2.=${VAR2.} VAR-=${VAR2-}";
     let mut variables = HashMap::new();
