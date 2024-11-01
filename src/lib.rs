@@ -29,8 +29,8 @@
 
 #![allow(clippy::implicit_hasher)]
 
-use std::collections::HashMap;
 use regex::Regex;
+use std::collections::HashMap;
 
 /// Library errors.
 #[derive(thiserror::Error, Debug)]

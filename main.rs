@@ -1,8 +1,8 @@
 use clap::Parser;
+use envsubst::substitute;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, Read};
-use envsubst::substitute;
 
 #[derive(Parser, Debug)]
 #[command(version, about = "Variable substitution tool")]
