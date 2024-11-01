@@ -51,12 +51,14 @@ where
         return Ok(output);
     }
 
+    validate_vars(variables)?;
+
     // Regular expression to match placeholders like ${VAR}, ${VAR.}, ${VAR-}
     let re = Regex::new(r"\$\{([A-Za-z_][A-Za-z0-9_]*)([\.\-][^}]*)?\}").unwrap();
 
     output = re
         .replace_all(&output, |caps: &regex::Captures| {
-            let var_name = &caps[1];
+            let var_name = caps.get(1).map_or("", |m| m.as_str());
             let suffix = caps.get(2).map_or("", |m| m.as_str());
 
             if let Some(value) = variables.get(var_name) {
@@ -177,6 +179,8 @@ mod tests {
 
         let mut env = HashMap::new();
         env.insert("VAR".to_string(), "${VAR}".to_string());
+
+        substitute(template, &env).unwrap_err();
     }
 
     #[test]
@@ -196,7 +200,7 @@ mod tests {
         variables.insert("VAR".to_string(), "".to_string());
 
         let result = substitute(template, &variables).unwrap();
-        assert_eq!(result, "   ");
+        assert_eq!(result, "  ");
     }
 
     #[test]
@@ -215,6 +219,6 @@ mod tests {
         variables.insert("VAR".to_string(), "value".to_string());
 
         let result = substitute(template, &variables).unwrap();
-        assert_eq!(result, "value suffix value-extra");
+        assert_eq!(result, "value.suffix value-extra");
     }
 }
