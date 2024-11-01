@@ -30,16 +30,18 @@
 #![allow(clippy::implicit_hasher)]
 
 use std::collections::HashMap;
+use regex::Regex;
 
 /// Library errors.
 #[derive(thiserror::Error, Debug)]
 #[error("envsubst error: {0}")]
 pub struct Error(String);
 
-/// Substitute variables in a template string.
+/// Substitute variables in a template string with optional suffix handling.
 ///
-/// Given an input string `template`, replace tokens of the form `${foo}` with
-/// values provided in `variables`.
+/// This function replaces tokens of the form `${VAR}`, `${VAR.}`, `${VAR-}` in the template string.
+/// - If the variable `VAR` has a non-empty value, it replaces the placeholder with `value + suffix`.
+/// - If the variable `VAR` has an empty value (`""`), it replaces the entire placeholder (including the suffix) with an empty string.
 pub fn substitute<T>(template: T, variables: &HashMap<String, String>) -> Result<String, Error>
 where
     T: Into<String>,
@@ -49,13 +51,26 @@ where
         return Ok(output);
     }
 
-    for (k, v) in variables {
-        validate(k, "key")?;
-        validate(v, "value")?;
+    // Regular expression to match placeholders like ${VAR}, ${VAR.}, ${VAR-}
+    let re = Regex::new(r"\$\{([A-Za-z_][A-Za-z0-9_]*)([\.\-][^}]*)?\}").unwrap();
 
-        let from = format!("${{{}}}", k);
-        output = output.replace(&from, v)
-    }
+    output = re
+        .replace_all(&output, |caps: &regex::Captures| {
+            let var_name = &caps[1];
+            let suffix = caps.get(2).map_or("", |m| m.as_str());
+
+            if let Some(value) = variables.get(var_name) {
+                if !value.is_empty() {
+                    format!("{}{}", value, suffix)
+                } else {
+                    "".to_string()
+                }
+            } else {
+                // If variable is not found, leave the placeholder as is
+                caps.get(0).unwrap().as_str().to_string()
+            }
+        })
+        .to_string();
 
     Ok(output)
 }
@@ -65,13 +80,8 @@ pub fn is_templated<S>(input: S) -> bool
 where
     S: AsRef<str>,
 {
-    let start = input.as_ref().find("${");
-    let end = input.as_ref().find('}');
-
-    match (start, end) {
-        (Some(s), Some(e)) => s < e,
-        _ => false,
-    }
+    let re = Regex::new(r"\$\{([A-Za-z_][A-Za-z0-9_]*)([\.\-][^}]*)?\}").unwrap();
+    re.is_match(input.as_ref())
 }
 
 /// Validate variables for substitution.
@@ -167,5 +177,44 @@ mod tests {
 
         let mut env = HashMap::new();
         env.insert("VAR".to_string(), "${VAR}".to_string());
+    }
+
+    #[test]
+    fn test_substitute_with_suffix_non_empty_var() {
+        let template = "${VAR} ${VAR.} ${VAR-}";
+        let mut variables = HashMap::new();
+        variables.insert("VAR".to_string(), "hoge".to_string());
+
+        let result = substitute(template, &variables).unwrap();
+        assert_eq!(result, "hoge hoge. hoge-");
+    }
+
+    #[test]
+    fn test_substitute_with_suffix_empty_var() {
+        let template = "${VAR} ${VAR.} ${VAR-}";
+        let mut variables = HashMap::new();
+        variables.insert("VAR".to_string(), "".to_string());
+
+        let result = substitute(template, &variables).unwrap();
+        assert_eq!(result, "   ");
+    }
+
+    #[test]
+    fn test_substitute_with_missing_var() {
+        let template = "${VAR} ${VAR.} ${VAR-}";
+        let variables = HashMap::new();
+
+        let result = substitute(template, &variables).unwrap();
+        assert_eq!(result, "${VAR} ${VAR.} ${VAR-}");
+    }
+
+    #[test]
+    fn test_substitute_with_complex_suffix() {
+        let template = "${VAR.suffix} ${VAR-extra}";
+        let mut variables = HashMap::new();
+        variables.insert("VAR".to_string(), "value".to_string());
+
+        let result = substitute(template, &variables).unwrap();
+        assert_eq!(result, "value suffix value-extra");
     }
 }
