@@ -12,6 +12,18 @@ exclude = [".gitignore", ".github"]
 
 [dependencies]
 thiserror = "^1.0"
+regex = "1.11.1"
+clap = { version = "4.5.20", features = ["derive"] }
+dotenvy = "0.15.7"
+
+[[bin]]
+name = "ksubst"
+path = "main.rs"
+
+[[example]]
+name = "basic"
+path = "examples/basic.rs"
+
 
 [package.metadata.release]
 sign-commit = true
