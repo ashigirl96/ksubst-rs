@@ -1,15 +1,15 @@
 apiVersion: networking.gke.io/v1
 kind: ManagedCertificate
 metadata:
-  name: ${FEATURE-}mc
+  name: K{FEATURE-}mc
 spec:
   domains:
-    - ${FEATURE.}example.com
+    - K{FEATURE.}example.com
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ${FEATURE-}${VERSION.}ing
+  name: K{FEATURE-}K{VERSION.}ing
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
