@@ -51,6 +51,39 @@ fn main() {
 
 This example demonstrates how to substitute variables in a template string using values from a context map.
 
+### Command Line
+
+ksubst is a tool that provides a command-line interface to replace variables in text files or streams. It retrieves values from environment variables or a specified .env file, allowing placeholders to be replaced with actual values.
+
+
+```shell
+> cat assets/foo.yaml  | ksubst -e env.assets
+
+...skip...
+metadata:
+  name: hoge-mc
+spec:
+  domains:
+    - hoge.example.com
+...skip...
+```
+
+
+```shell
+> ksubst -e env.assets -r assets assets2
+> diff -u <(find assets -type f -exec cat {} +)  <(find assets2 -type f -exec cat {} +)
+
+...skip...
+ metadata:
+-  name: ${FEATURE-}mc
++  name: hoge-mc
+...skip...
+       labels:
+-        app: ${FEATURE-}name
++        app: hoge-name
+```
+
+
 ## License
 
 Licensed under either of

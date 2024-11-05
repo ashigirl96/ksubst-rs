@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${FEATURE-}name
+  labels:
+    app: ${FEATURE-}name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${FEATURE-}name
+  template:
+    metadata:
+      name: ${FEATURE-}name
+      labels:
+        app: ${FEATURE-}name
+    spec:
+      containers:
+        - name: ${FEATURE-}name
+          image: nginx
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              protocol: TCP
+      restartPolicy: Always
