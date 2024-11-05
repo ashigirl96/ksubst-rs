@@ -68,9 +68,8 @@ spec:
 ...skip...
 ```
 
-
 ```shell
-> ksubst -e env.assets -r assets assets2
+> ksubst --env-file env.assets -r assets assets2
 > diff -u <(find assets -type f -exec cat {} +)  <(find assets2 -type f -exec cat {} +)
 
 ...skip...
@@ -83,6 +82,7 @@ spec:
 +        app: hoge-name
 ```
 
+or `ksubst -r assets assets2 --env-vars 'FEATURE=hoge2,VERSION=123'`
 
 ## License
 
