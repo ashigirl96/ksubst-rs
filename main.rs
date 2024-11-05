@@ -1,11 +1,11 @@
 use clap::Parser;
+use globset::{Glob, GlobSet, GlobSetBuilder};
 use ksubst::substitute;
 use std::collections::HashMap;
 use std::env;
 use std::io::{self, Read};
 use std::path::Path;
 use walkdir::WalkDir;
-use globset::{Glob, GlobSet, GlobSetBuilder};
 
 #[derive(Parser, Debug)]
 #[command(version, about = "Variable substitution tool")]
