@@ -18,10 +18,6 @@ Its name and logic are similar to the [`envsubst`] GNU utility, but this support
 
 This project is a fork of [envsubst-rs](https://github.com/coreos/envsubst-rs). We greatly respect and appreciate the original work done by the `envsubst-rs` maintainers.
 
-## Why use K{} instead of ${}?
-
-In the original `envsubst`, the `${}` syntax is typically used for placeholders. However, in Kubernetes and Kustomize configurations, the metadata.name field does not allow the use of `$` symbols. As a result, if you use `${}` for variable substitution in `patches`, Kubernetes or Kustomize will ignore these placeholders, preventing the intended value replacement. Therefore, using a different syntax, such as `K{}`, ensures compatibility and allows for seamless substitution.
-
 ## Example
 
 You can run an example to see how the library works by executing:

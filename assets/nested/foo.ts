@@ -1,1 +1,1 @@
-console.log(`Hello, K{FEATURE}`);
+console.log(`Hello, ${FEATURE}`);
