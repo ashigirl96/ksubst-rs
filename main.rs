@@ -11,8 +11,12 @@ use walkdir::WalkDir;
 #[command(version, about = "Variable substitution tool")]
 struct Args {
     /// Path to .env file
-    #[arg(short = 'e', long = "env")]
+    #[arg(long = "env-file", conflicts_with = "env_vars")]
     env_file: Option<String>,
+
+    /// Environment variables in 'KEY=VALUE' format, separated by commas
+    #[arg(long = "env-vars", conflicts_with = "env_file")]
+    env_vars: Option<String>,
 
     /// Recursively process files in input directory
     #[arg(short = 'r', long = "recursive", requires_all = ["input_dir", "output_dir"])]
@@ -48,6 +52,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 vars.insert(key, value);
             });
         vars
+    } else if let Some(env_vars_str) = args.env_vars {
+        // Parse variables from command-line string
+        parse_env_vars(&env_vars_str)?
     } else {
         // Use environment variables
         env::vars().collect::<HashMap<String, String>>()
@@ -77,7 +84,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         io::stdin().read_to_string(&mut input)?;
 
         // Perform substitution
-        let output = substitute(input, &variables)?;
+        let output = substitute(&input, &variables)?;
 
         // Write to stdout
         println!("{}", output);
@@ -140,4 +147,23 @@ fn process_directory_recursively(
     }
 
     Ok(())
+}
+
+fn parse_env_vars(s: &str) -> Result<HashMap<String, String>, Box<dyn std::error::Error>> {
+    let mut vars = HashMap::new();
+    for pair in s.split(',') {
+        let mut iter = pair.splitn(2, '=');
+        let key = iter
+            .next()
+            .ok_or("Missing key in env-vars")?
+            .trim()
+            .to_string();
+        let value = iter
+            .next()
+            .ok_or("Missing value in env-vars")?
+            .trim()
+            .to_string();
+        vars.insert(key, value);
+    }
+    Ok(vars)
 }
