@@ -5,6 +5,7 @@ use std::env;
 use std::io::{self, Read};
 use std::path::Path;
 use walkdir::WalkDir;
+use globset::{Glob, GlobSet, GlobSetBuilder};
 
 #[derive(Parser, Debug)]
 #[command(version, about = "Variable substitution tool")]
@@ -24,6 +25,14 @@ struct Args {
     /// Output directory (required if -r is specified)
     #[arg()]
     output_dir: Option<String>,
+
+    /// Exclude patterns (can be specified multiple times)
+    #[arg(long = "exclude")]
+    exclude_patterns: Vec<String>,
+
+    /// Filter patterns (can be specified multiple times)
+    #[arg(long = "filter")]
+    filter_patterns: Vec<String>,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -49,7 +58,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let input_dir = args.input_dir.unwrap();
         let output_dir = args.output_dir.unwrap();
 
-        process_directory_recursively(&input_dir, &output_dir, &variables)?;
+        // Build exclude globset
+        let exclude_globset = build_globset(&args.exclude_patterns)?;
+
+        // Build filter globset
+        let filter_globset = build_globset(&args.filter_patterns)?;
+
+        process_directory_recursively(
+            &input_dir,
+            &output_dir,
+            &variables,
+            &exclude_globset,
+            &filter_globset,
+        )?;
     } else {
         // Read from stdin
         let mut input = String::new();
@@ -65,16 +86,40 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+fn build_globset(patterns: &[String]) -> Result<GlobSet, Box<dyn std::error::Error>> {
+    let mut builder = GlobSetBuilder::new();
+    for pattern in patterns {
+        let glob = Glob::new(pattern)?;
+        builder.add(glob);
+    }
+    Ok(builder.build()?)
+}
+
 fn process_directory_recursively(
     input_dir: &str,
     output_dir: &str,
     variables: &HashMap<String, String>,
+    exclude_globset: &GlobSet,
+    filter_globset: &GlobSet,
 ) -> Result<(), Box<dyn std::error::Error>> {
     for entry in WalkDir::new(input_dir) {
         let entry = entry?;
         let path = entry.path();
 
         if path.is_file() {
+            // Get relative path
+            let relative_path = path.strip_prefix(input_dir)?;
+
+            // Check exclude patterns
+            if !exclude_globset.is_empty() && exclude_globset.is_match(relative_path) {
+                continue;
+            }
+
+            // If filter patterns are specified, only process files that match the filter patterns
+            if !filter_globset.is_empty() && !filter_globset.is_match(relative_path) {
+                continue;
+            }
+
             // Read file content
             let input_content = std::fs::read_to_string(path)?;
 
@@ -82,7 +127,6 @@ fn process_directory_recursively(
             let output_content = substitute(&input_content, variables)?;
 
             // Compute output path
-            let relative_path = path.strip_prefix(input_dir)?;
             let output_path = Path::new(output_dir).join(relative_path);
 
             // Create parent directories if needed
