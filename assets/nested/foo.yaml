@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${FEATURE-}name
+  name: K{FEATURE-}name
   labels:
-    app: ${FEATURE-}name
+    app: K{FEATURE-}name
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${FEATURE-}name
+      app: K{FEATURE-}name
   template:
     metadata:
-      name: ${FEATURE-}name
+      name: K{FEATURE-}name
       labels:
-        app: ${FEATURE-}name
+        app: K{FEATURE-}name
     spec:
       containers:
-        - name: ${FEATURE-}name
+        - name: K{FEATURE-}name
           image: nginx
           imagePullPolicy: IfNotPresent
           ports:
