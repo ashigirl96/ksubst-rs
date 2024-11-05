@@ -9,7 +9,7 @@ This library provides helper functions for string manipulation,
 taking values from a context **env**ironment map and **subst**ituting
 all matching placeholders.
 
-Its name and logic are similar to the [`envsubst`] GNU utility, but this supports braces-delimited variables (i.e., `${foo}`, `${foo.}`, `${foo-}`) and takes replacement values from an explicit map of variables.
+Its name and logic are similar to the [`envsubst`] GNU utility, but this supports braces-delimited variables (i.e., `K{foo}`, `K{foo.}`, `K{foo-}`) and takes replacement values from an explicit map of variables.
 
 
 [`envsubst`]: https://www.gnu.org/software/gettext/manual/html_node/envsubst-Invocation.html
@@ -43,7 +43,7 @@ Here's the code used in the example:
 
 ```rust
 fn main() {
-    let template = "VAR=${VAR} VAR.=${VAR.} VAR-=${VAR-}\nVAR2=${VAR2} VAR2.=${VAR2.} VAR-=${VAR2-}";
+    let template = "VAR=K{VAR} VAR.=K{VAR.} VAR-=K{VAR-}\nVAR2=K{VAR2} VAR2.=K{VAR2.} VAR-=K{VAR2-}";
     let mut variables = HashMap::new();
     variables.insert("VAR".to_string(), "hoge".to_string());
     variables.insert("VAR2".to_string(), "".to_string());
@@ -78,11 +78,11 @@ spec:
 
 ...skip...
  metadata:
--  name: ${FEATURE-}mc
+-  name: K{FEATURE-}mc
 +  name: hoge-mc
 ...skip...
        labels:
--        app: ${FEATURE-}name
+-        app: K{FEATURE-}name
 +        app: hoge-name
 ```
 
