@@ -45,7 +45,7 @@ jobs:
       - name: Rename artifact
         run: |
           BIN_NAME=$(basename $(find target/${{ matrix.target }}/release -maxdepth 1 -type f -executable))
-          mv target/${{ matrix.target }}/release/$BIN_NAME target/${{ matrix.target }}/release/${{ BIN_NAME }}-${{ github.ref_name }}-${{ matrix.target }}${{ matrix.extension }}
+          mv target/${{ matrix.target }}/release/$BIN_NAME target/${{ matrix.target }}/release/${BIN_NAME}-${{ github.ref_name }}-${{ matrix.target }}${{ matrix.extension }}
 
       - name: Upload Release Asset
         uses: softprops/action-gh-release@v1
