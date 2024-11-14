@@ -1,7 +1,7 @@
 # ksubst
 
-[![crates.io](https://img.shields.io/crates/v/envsubst.svg)](https://crates.io/crates/envsubst)
-[![Documentation](https://docs.rs/envsubst/badge.svg)](https://docs.rs/envsubst)
+[![crates.io](https://img.shields.io/crates/v/ksubst.svg)](https://crates.io/crates/ksubst)
+[![Documentation](https://docs.rs/ksubst/badge.svg)](https://docs.rs/ksubst)
 
 A simple Rust library for variable substitution.
 
@@ -9,14 +9,14 @@ This library provides helper functions for string manipulation,
 taking values from a context **env**ironment map and **subst**ituting
 all matching placeholders.
 
-Its name and logic are similar to the [`envsubst`] GNU utility, but this supports braces-delimited variables (i.e., `${foo}`, `${foo.}`, `${foo-}`) and takes replacement values from an explicit map of variables.
+Its name and logic are similar to the [`ksubst`] GNU utility, but this supports braces-delimited variables (i.e., `${foo}`, `${foo.}`, `${foo-}`) and takes replacement values from an explicit map of variables.
 
 
-[`envsubst`]: https://www.gnu.org/software/gettext/manual/html_node/envsubst-Invocation.html
+[`ksubst`]: https://www.gnu.org/software/gettext/manual/html_node/ksubst-Invocation.html
 
 ## Fork Acknowledgment
 
-This project is a fork of [envsubst-rs](https://github.com/coreos/envsubst-rs). We greatly respect and appreciate the original work done by the `envsubst-rs` maintainers.
+This project is a fork of [ksubst-rs](https://github.com/ashigirl96/ksubst-rs). We greatly respect and appreciate the original work done by the `ksubst-rs` maintainers.
 
 ## Example
 

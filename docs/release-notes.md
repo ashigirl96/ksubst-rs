@@ -1,6 +1,6 @@
 # Release notes
 
-## Upcoming envsubst 0.2.2 (unreleased)
+## Upcoming ksubst 0.2.2 (unreleased)
 
 Changes:
 
@@ -8,7 +8,7 @@ Changes:
 - Add release notes doc
 
 
-## envsubst 0.2.1 (2022-11-29)
+## ksubst 0.2.1 (2022-11-29)
 
 Changes:
 

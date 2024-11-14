@@ -4,26 +4,26 @@
 //! taking values from a context **env**ironment map and **subst**ituting
 //! all matching placeholders.
 //!
-//! Its name and logic is similar to the [`envsubst`] GNU utility, but
+//! Its name and logic is similar to the [`ksubst`] GNU utility, but
 //! this only supports braces-delimited variables (i.e. `${foo}`) and
 //! takes replacement values from an explicit map of variables.
 //!
-//! [`envsubst`]: https://www.gnu.org/software/gettext/manual/html_node/envsubst-Invocation.html
+//! [`ksubst`]: https://www.gnu.org/software/gettext/manual/html_node/ksubst-Invocation.html
 //!
 //! ## Example
 //!
 //! ```rust
 //! let base_url = "${protocol}://${hostname}/${endpoint}";
-//! assert!(envsubst::is_templated(base_url));
+//! assert!(ksubst::is_templated(base_url));
 //!
 //! let mut context = std::collections::HashMap::new();
 //! context.insert("protocol".to_string(), "https".to_string());
 //! context.insert("hostname".to_string(), "example.com".to_string());
 //! context.insert("endpoint".to_string(), "login".to_string());
-//! assert!(envsubst::validate_vars(&context).is_ok());
+//! assert!(ksubst::validate_vars(&context).is_ok());
 //!
-//! let final_url = envsubst::substitute(base_url, &context).unwrap();
-//! assert!(!envsubst::is_templated(&final_url));
+//! let final_url = ksubst::substitute(base_url, &context).unwrap();
+//! assert!(!ksubst::is_templated(&final_url));
 //! assert_eq!(final_url, "https://example.com/login");
 //! ```
 
@@ -34,7 +34,7 @@ use std::collections::HashMap;
 
 /// Library errors.
 #[derive(thiserror::Error, Debug)]
-#[error("envsubst error: {0}")]
+#[error("ksubst error: {0}")]
 pub struct Error(String);
 
 /// Substitute variables in a template string with optional suffix handling.
