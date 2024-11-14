@@ -40,19 +40,30 @@ jobs:
             runs-on: macOS-latest
             target: aarch64-apple-darwin
 
-          # more targets here ...
-
     runs-on: ${{ matrix.platform.runs-on }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Install Rust toolchain
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          target: ${{ matrix.platform.target }}
+
+      - name: Add aarch64 target if on macOS
+        if: matrix.platform.os-name == 'macOS-aarch64'
+        run: rustup target add aarch64-apple-darwin
+
       - name: Build binary
         uses: houseabsolute/actions-rust-cross@v0
         with:
-          command: ${{ matrix.platform.command }}
+          command: cargo build
           target: ${{ matrix.platform.target }}
           args: "--locked --release"
           strip: true
+
       - name: Publish artifacts and release
         uses: houseabsolute/actions-rust-release@v0
         with:
